@@ -1,13 +1,15 @@
 import datetime
 from io import StringIO
-from flask import Flask, request, Response
+from flask import Flask, request, Response, redirect, send_from_directory
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 import csv
 import sqlite3 as sq
 import pandas as pd
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/docs', static_folder='docs')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no cache!
+
 api = Api(app)
 
 # defining database
@@ -320,6 +322,21 @@ def get_info():
         print("hey")
         output = final.to_json(orient='records')
         return Response(output, status=200)
+
+
+# @app.route('/docs/<path:path>')
+# def host_doc(path):
+#     return send_from_directory('docs', path)
+
+
+@app.route('/docs')
+def show_doc():
+    return redirect("docs/index.html?url=swagger.json", code=302)
+
+
+@app.route('/')
+def redirect_root():
+    return redirect("docs/index.html?url=swagger.json", code=302)
 
 
 def locate_columns_time_series(lst):

@@ -1,0 +1,12 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "PLaceHolder",
+    "version" : "0.1",
+    "title" : "PLaceHolder1",
+    "contact" : {
+      "name" : "PLaceHolder"
+    }
+  },
+  "paths": {}
+}
