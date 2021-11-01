@@ -306,7 +306,7 @@ def get_info():
     con = sq.connect('covid.db')
     result = []
     for q in query:
-        sql_query = "select country as 'country/region', state as 'state/province', combined as 'combined_key', date(date) as date, cases, '%s' as 'type' " \
+        sql_query = "select country as 'country_region', state as 'state_province', combined as 'combined_key', date(date) as date, cases, '%s' as 'type' " \
                     "from %s where country='%s' and state='%s' and combined='%s' and date >= '%s' and " \
                     "date < DATE('%s', '+1 day');" % (q[5], q[5], q[0], q[1], q[2], q[3], q[4])
         result.append(pd.read_sql(sql_query, con))
@@ -319,7 +319,6 @@ def get_info():
         final.to_csv(output)
         return Response(output.getvalue(), mimetype="text/csv", status=200)
     else:  # default json
-        print("hey")
         output = final.to_json(orient='records')
         return Response(output, status=200)
 
