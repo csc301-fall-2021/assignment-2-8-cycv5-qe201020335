@@ -6,10 +6,11 @@ import pytest
 
 BASE = "http://127.0.0.1:5000/"
 
+server = subprocess.Popen(["python", "main.py"])
 
-@pytest.fixture
-def app():
-    subprocess.Popen(["python", "main.py"])
+# @pytest.fixture
+# def test_app():
+#     subprocess.Popen(["python", "main.py"])
 
 
 def test_upload():
@@ -17,3 +18,6 @@ def test_upload():
     response = requests.post(BASE + "time_series/death", files=file)
     assert response.content == b'Success'
     file['file'].close()
+
+
+# server.terminate()
