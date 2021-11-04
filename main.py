@@ -88,12 +88,12 @@ class Recovered(db.Model):
 @app.route('/<table_type>', defaults={'data_type': None}, methods=['POST', 'PUT'])
 def upload_data(table_type, data_type):
     if 'file' not in request.files:
-        return Response("no file part", status=200)
+        return Response("no file part", status=400)
     file = request.files['file']
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
-        return Response("no selected file", status=200)
+        return Response("no selected file", status=400)
 
     filename = secure_filename(file.filename)
     file.save(filename)
@@ -330,7 +330,7 @@ def get_info():
              ('US', 'South Carolina', 'Abbeville, South Carolina, US', '2020-06-06', '2020-06-06', 'active'),
              ('Bahamas', '', '', '2020-01-23', '2020-07-01', 'death')]
     # TODO: get output format from request, csv or json
-    output_format = 'json'
+    output_format = 'csv'
 
     # Below are database ops
     con = sq.connect('covid.db')
@@ -436,8 +436,8 @@ def validate_date(date):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)  # TODO: change to false for production
+    # app.run(debug=True)  # TODO: change to false for production
 
     # upload_time_series("death")
     # upload_daily_reports()
-    # get_info()
+    get_info()
