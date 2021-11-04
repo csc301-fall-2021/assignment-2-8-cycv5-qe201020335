@@ -200,7 +200,7 @@
       "QueryResultCSV" : {
         "type" : "string",
         "description" : "A CSV with the headers\n\nrow_number,country_region,state_province,combined_key,date,cases,type\n",
-        "example" : "row_number,country_region,state_province,combined_key,date,cases,type \\n\n\n0,Canada,British Columbia,,2020-01-22,0,death \\n\n\n1,Canada,British Columbia,,2020-01-23,2,death"
+        "example" : "index,country_region,state_province,combined_key,date,cases,type \\n\n\n0,Canada,British Columbia,,2020-01-22,0,death \\n\n\n1,Canada,British Columbia,,2020-01-23,2,death"
       }
     }
   }
