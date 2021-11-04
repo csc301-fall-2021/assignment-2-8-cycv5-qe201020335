@@ -7,6 +7,21 @@ import csv
 import sqlite3 as sq
 import pandas as pd
 
+import os
+
+from werkzeug.utils import secure_filename
+
+
+# Constants
+
+TIME_SERIES = "time_series"
+DAILY_REPORTS = "daily_reports"
+DEATH = 'death'
+CONFIRMED = 'confirmed'
+ACTIVE = 'active'
+RECOVERED = 'recovered'
+
+
 app = Flask(__name__, static_url_path='/docs', static_folder='docs')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no cache!
 
