@@ -1,4 +1,5 @@
 import subprocess
+from time import sleep
 
 import requests
 import pytest
@@ -14,6 +15,7 @@ server = subprocess.Popen(["python", "main.py"])
 
 
 def test_upload():
+    sleep(3)
     file = {'file': open("test/time_series_test.csv")}
     response = requests.post(BASE + "time_series/death", files=file)
     assert response.content == b'Success'
