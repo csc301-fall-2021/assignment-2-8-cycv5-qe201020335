@@ -5,6 +5,9 @@
     "version" : "1.0.0-oas3",
     "title" : "Simple Inventory API"
   },
+  "servers" : [ {
+    "url" : "http://127.0.0.1:5000"
+  } ],
   "tags" : [ {
     "name" : "upload",
     "description" : "Add new data or update existing data"
@@ -16,17 +19,32 @@
     "/time_series/{data_type}" : {
       "put" : {
         "tags" : [ "upload" ],
-        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "description" : "Upload new time series data\n",
         "parameters" : [ {
           "in" : "path",
           "name" : "data_type",
           "schema" : {
             "type" : "string",
-            "enum" : [ "death" ]
+            "enum" : [ "death", "confirmed", "active", "recovered" ]
           },
           "required" : true,
-          "description" : "Numeric ID of the user to get"
+          "description" : "the type of data"
         } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses" : {
           "201" : {
             "description" : "Data successfully uploaded",
@@ -45,13 +63,58 @@
         }
       }
     },
-    "/inventory" : {
+    "/daily_reports" : {
+      "put" : {
+        "tags" : [ "upload" ],
+        "description" : "Upload new daily report data\n",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Data successfully uploaded",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Success"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "CSV file not valid"
+          }
+        }
+      }
+    },
+    "/cases/{data_type}" : {
       "get" : {
-        "tags" : [ "developers" ],
-        "summary" : "searches inventory",
-        "operationId" : "searchInventory",
+        "tags" : [ "query" ],
+        "summary" : "query covid case data with parameters",
         "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
         "parameters" : [ {
+          "in" : "path",
+          "name" : "data_type",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "death", "confirmed", "active", "recovered" ]
+          },
+          "required" : true,
+          "description" : "the type of data"
+        }, {
           "in" : "query",
           "name" : "searchString",
           "description" : "pass an optional search string for looking up inventory",
@@ -85,10 +148,12 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/QueryResult"
-                  }
+                  "$ref" : "#/components/schemas/QueryResultJson"
+                }
+              },
+              "text/csv" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QueryResultCSV"
                 }
               }
             }
@@ -97,59 +162,29 @@
             "description" : "bad input parameter"
           }
         }
-      },
-      "post" : {
-        "tags" : [ "admins" ],
-        "summary" : "adds an inventory item",
-        "operationId" : "addInventory",
-        "description" : "Adds an item to the system",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/QueryResult"
-              }
-            }
-          },
-          "description" : "Inventory item to add"
-        },
-        "responses" : {
-          "201" : {
-            "description" : "item created"
-          },
-          "400" : {
-            "description" : "invalid input, object invalid"
-          },
-          "409" : {
-            "description" : "an existing item already exists"
-          }
-        }
       }
     }
   },
-  "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/qe201020335/SimpleCOVID2/1.0.0"
-  } ],
   "components" : {
     "schemas" : {
-      "QueryResult" : {
+      "QueryResultJson" : {
         "type" : "object",
         "properties" : {
           "country_region" : {
             "type" : "string",
-            "example" : "ACME Corporation"
+            "example" : "Canada"
           },
           "state_province" : {
             "type" : "string",
-            "example" : "https://www.acme-corp.com"
+            "example" : "Ontario"
           },
           "combined_key" : {
             "type" : "string",
-            "example" : "https://www.acme-corp.com"
+            "example" : "Ontario, Canada"
           },
           "date" : {
             "type" : "string",
-            "example" : "408-867-5309"
+            "example" : "2020-01-25"
           },
           "cases" : {
             "type" : "integer",
@@ -161,6 +196,11 @@
             "example" : "death"
           }
         }
+      },
+      "QueryResultCSV" : {
+        "type" : "string",
+        "description" : "A CSV with the headers\n\nrow_number,country_region,state_province,combined_key,date,cases,type\n",
+        "example" : "row_number,country_region,state_province,combined_key,date,cases,type \\n\n\n0,Canada,British Columbia,,2020-01-22,0,death \\n\n\n1,Canada,British Columbia,,2020-01-23,2,death"
       }
     }
   }
