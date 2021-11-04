@@ -322,8 +322,8 @@ def handle_upload_daily_reports(opened_file):
     return Response("Success", status=201)
 
 
-@app.route('/cases', methods=['GET'])
-def get_info():
+@app.route('/cases/<data_type>', methods=['GET'])
+def get_info(data_type):
 
     # TODO: get the following info from request, hardcoded for now.
     #  format List[<tup>,...,<tup>], each tuple has
@@ -334,7 +334,7 @@ def get_info():
              ('US', 'South Carolina', 'Abbeville, South Carolina, US', '2020-06-06', '2020-06-06', 'active'),
              ('Bahamas', '', '', '2020-01-23', '2020-07-01', 'death')]
     # TODO: get output format from request, csv or json
-    output_format = 'json'
+    output_format = request.headers['Accept']
 
     # Below are database ops
     con = sq.connect('covid.db')
@@ -349,12 +349,12 @@ def get_info():
     print(final)
     output = StringIO()
 
-    if output_format == 'csv':
+    if output_format == 'text/csv':
         final.to_csv(output)
-        return Response(output.getvalue(), mimetype="text/csv", status=200)
+        return Response("index" + output.getvalue(), mimetype="text/csv", status=200)
     else:  # default json
         output = final.to_json(orient='records')
-        return Response(output, status=200)
+        return Response(output, mimetype="application/json", status=200)
 
 
 # @app.route('/docs/<path:path>')
