@@ -94,21 +94,25 @@ def upload_data(table_type, data_type):
     # empty file without a filename.
     if file.filename == '':
         return Response("no selected file", status=200)
+    try:
+        filename = "temp.dat"
+        file.save(filename)
 
-    filename = secure_filename(file.filename)
-    file.save(filename)
-    opened_file = open(filename, encoding="utf-8")
+        opened_file = open(filename, encoding="utf-8")
 
-    if table_type == TIME_SERIES:
-        res = handle_upload_time_series(data_type, opened_file)
-    elif table_type == DAILY_REPORTS:
-        res = handle_upload_daily_reports(opened_file)
-    else:
-        res = Response("Illegal Data Format", status=400)
+        if table_type == TIME_SERIES:
+            res = handle_upload_time_series(data_type, opened_file)
+        elif table_type == DAILY_REPORTS:
+            res = handle_upload_daily_reports(opened_file)
+        else:
+            res = Response("Illegal Data Format", status=400)
 
-    opened_file.close()
-    os.remove(filename)
-    return res
+        opened_file.close()
+        os.remove(filename)
+        return res
+
+    except UnicodeDecodeError:
+        return Response("Invalid csv form", status=400)
 
 
 def handle_upload_time_series(data_type, opened_file):
