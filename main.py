@@ -84,15 +84,36 @@ class Recovered(db.Model):
                f"'{self.cases}', '{self.date}')"
 
 
-@app.route('/time_series/<data_type>', methods=['POST', 'PUT'])
-def upload_time_series(data_type):
-    # file = request.files['file']
-    # TODO: the below must be replaced by getting from request
-    #      <data_type> can be 'death', 'confirmed', 'active', 'recovered'
-    file = open("test/time_series_test.csv")
+@app.route('/<table_type>/<data_type>', methods=['POST', 'PUT'])
+@app.route('/<table_type>', defaults={'data_type': None}, methods=['POST', 'PUT'])
+def upload_data(table_type, data_type):
+    if 'file' not in request.files:
+        return Response("no file part", status=200)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        return Response("no selected file", status=200)
 
-    # below are database ops
-    reader = csv.reader(file)
+    filename = secure_filename(file.filename)
+    file.save(filename)
+    opened_file = open(filename, encoding="utf-8")
+
+    if table_type == TIME_SERIES:
+        res = handle_upload_time_series(data_type, opened_file)
+    elif table_type == DAILY_REPORTS:
+        res = handle_upload_daily_reports(opened_file)
+    else:
+        res = Response("Illegal Data Format", status=400)
+
+    opened_file.close()
+    os.remove(filename)
+    return res
+
+
+def handle_upload_time_series(data_type, opened_file):
+
+    reader = csv.reader(opened_file)
     header = next(reader)
     print(header)
     c1, c2, c3, date_start, success = locate_columns_time_series(header)
@@ -212,15 +233,9 @@ def upload_time_series(data_type):
     return Response("Success", status=201)
 
 
-@app.route('/daily_reports/', methods=['POST', 'PUT'])
-def upload_daily_reports():
-    # file = request.files['file']
+def handle_upload_daily_reports(opened_file):
 
-    # TODO:the below must be replaced by getting from request
-    file = open("test/daily_report_test.csv")
-
-    # below are database ops
-    reader = csv.reader(file)
+    reader = csv.reader(opened_file)
     header = next(reader)
     print(header)
     c1, c2, c3, c_date, c_death, c_confirmed, c_active, c_recovered, success = locate_columns_daily_report(header)
