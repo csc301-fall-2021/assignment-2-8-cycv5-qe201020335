@@ -1,12 +1,167 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.0",
   "info" : {
-    "description" : "PLaceHolder",
-    "version" : "0.1",
-    "title" : "PLaceHolder1",
-    "contact" : {
-      "name" : "PLaceHolder"
+    "description" : "This is a simple API",
+    "version" : "1.0.0-oas3",
+    "title" : "Simple Inventory API"
+  },
+  "tags" : [ {
+    "name" : "upload",
+    "description" : "Add new data or update existing data"
+  }, {
+    "name" : "query",
+    "description" : "Query data, DUH."
+  } ],
+  "paths" : {
+    "/time_series/{data_type}" : {
+      "put" : {
+        "tags" : [ "upload" ],
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "data_type",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "death" ]
+          },
+          "required" : true,
+          "description" : "Numeric ID of the user to get"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Data successfully uploaded",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Success"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "CSV file not valid"
+          }
+        }
+      }
+    },
+    "/inventory" : {
+      "get" : {
+        "tags" : [ "developers" ],
+        "summary" : "searches inventory",
+        "operationId" : "searchInventory",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "searchString",
+          "description" : "pass an optional search string for looking up inventory",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "skip",
+          "description" : "number of records to skip for pagination",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0,
+            "maximum" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/QueryResult"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds an inventory item",
+        "operationId" : "addInventory",
+        "description" : "Adds an item to the system",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/QueryResult"
+              }
+            }
+          },
+          "description" : "Inventory item to add"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
     }
   },
-  "paths": {}
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/qe201020335/SimpleCOVID2/1.0.0"
+  } ],
+  "components" : {
+    "schemas" : {
+      "QueryResult" : {
+        "type" : "object",
+        "properties" : {
+          "country_region" : {
+            "type" : "string",
+            "example" : "ACME Corporation"
+          },
+          "state_province" : {
+            "type" : "string",
+            "example" : "https://www.acme-corp.com"
+          },
+          "combined_key" : {
+            "type" : "string",
+            "example" : "https://www.acme-corp.com"
+          },
+          "date" : {
+            "type" : "string",
+            "example" : "408-867-5309"
+          },
+          "cases" : {
+            "type" : "integer",
+            "example" : 10
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "death", "confirmed", "active", "recovered" ],
+            "example" : "death"
+          }
+        }
+      }
+    }
+  }
 }
