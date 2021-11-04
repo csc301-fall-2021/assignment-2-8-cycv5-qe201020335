@@ -88,12 +88,12 @@ class Recovered(db.Model):
 @app.route('/<table_type>', defaults={'data_type': None}, methods=['POST', 'PUT'])
 def upload_data(table_type, data_type):
     if 'file' not in request.files:
-        return Response("no file part", status=200)
+        return Response("no file part", status=400)
     file = request.files['file']
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
-        return Response("no selected file", status=200)
+        return Response("no selected file", status=400)
     try:
         filename = "temp.dat"
         file.save(filename)
