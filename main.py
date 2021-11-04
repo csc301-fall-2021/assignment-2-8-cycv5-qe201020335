@@ -24,6 +24,7 @@ RECOVERED = 'recovered'
 
 app = Flask(__name__, static_url_path='/docs', static_folder='docs')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no cache!
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
 
