@@ -8,7 +8,7 @@ import pytest
 BASE = "http://127.0.0.1:5000/"
 
 server = subprocess.Popen(["python", "main.py"])
-sleep(2)
+sleep(3)
 # @pytest.fixture
 # def test_app():
 #     subprocess.Popen(["python", "main.py"])
