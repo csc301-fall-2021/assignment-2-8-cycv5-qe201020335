@@ -104,7 +104,7 @@ def upload_data(table_type, data_type):
         if table_type == TIME_SERIES:
             res = handle_upload_time_series(data_type, opened_file)
         elif table_type == DAILY_REPORTS:
-            res = handle_upload_daily_reports(opened_file)
+            res = handle_upload_daily_reports(opened_file, date_input="2020-06-05")  # TODO: add date input
         else:
             res = Response("Illegal Data Format", status=400)
 
@@ -238,7 +238,7 @@ def handle_upload_time_series(data_type, opened_file):
     return Response("Success", status=201)
 
 
-def handle_upload_daily_reports(opened_file):
+def handle_upload_daily_reports(opened_file, date_input):
 
     reader = csv.reader(opened_file)
     header = next(reader)
@@ -254,7 +254,7 @@ def handle_upload_daily_reports(opened_file):
             comb = row[c3]
 
         if c_death != -1:
-            date = datetime.datetime.strptime(str(datetime.datetime.strptime(row[c_date], '%Y-%m-%d %H:%M:%S').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
+            date = datetime.datetime.strptime(str(datetime.datetime.strptime(date_input, '%Y-%m-%d').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
             try:
                 existing = Death.query.filter_by(country=row[c1], state=row[c2], combined=comb, date=date).first()
                 if existing is None:
@@ -270,7 +270,7 @@ def handle_upload_daily_reports(opened_file):
                 return Response("Cannot add to database", status=500)
 
         if c_confirmed != -1:
-            date = datetime.datetime.strptime(str(datetime.datetime.strptime(row[c_date], '%Y-%m-%d %H:%M:%S').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
+            date = datetime.datetime.strptime(str(datetime.datetime.strptime(date_input, '%Y-%m-%d').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
             try:
                 existing = Confirmed.query.filter_by(country=row[c1], state=row[c2], combined=comb, date=date).first()
                 if existing is None:
@@ -286,7 +286,7 @@ def handle_upload_daily_reports(opened_file):
                 return Response("Cannot add to database", status=500)
 
         if c_active != -1:
-            date = datetime.datetime.strptime(str(datetime.datetime.strptime(row[c_date], '%Y-%m-%d %H:%M:%S').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
+            date = datetime.datetime.strptime(str(datetime.datetime.strptime(date_input, '%Y-%m-%d').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
             try:
                 existing = Active.query.filter_by(country=row[c1], state=row[c2], combined=comb, date=date).first()
                 if existing is None:
@@ -302,7 +302,7 @@ def handle_upload_daily_reports(opened_file):
                 return Response("Cannot add to database", status=500)
 
         if c_recovered != -1:
-            date = datetime.datetime.strptime(str(datetime.datetime.strptime(row[c_date], '%Y-%m-%d %H:%M:%S').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
+            date = datetime.datetime.strptime(str(datetime.datetime.strptime(date_input, '%Y-%m-%d').date()) + ' 00:00:00.0', "%Y-%m-%d %H:%M:%S.%f")
             try:
                 existing = Recovered.query.filter_by(country=row[c1], state=row[c2], combined=comb, date=date).first()
                 if existing is None:
