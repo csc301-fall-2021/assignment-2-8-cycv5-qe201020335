@@ -1,5 +1,13 @@
 # Web API for Covid-19 data
 assignment-2-8-cycv5-qe201020335
+
+## API Documentation
+Our API is deployed on Heroku with base URL `https://simple-covid.herokuapp.com/`.
+
+We have documented our API in much detail with Swagger. **Click [HERE](https://simple-covid.herokuapp.com/docs/index.html?url=swagger.json) for the documentation.**
+
+The base URL will redirect you to the documentation page if you decide to put it directly in your browser.
+
 ## Pair Programming
 
 Our team did pair programming throughout the entire project. For the most part we only work on the code together when one of us is stuck, but we did do some real pair programming together as well.
