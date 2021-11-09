@@ -22,6 +22,7 @@ DEATH = 'death'
 CONFIRMED = 'confirmed'
 ACTIVE = 'active'
 RECOVERED = 'recovered'
+ADMIN_SECRET = 'SkyAdminSecret'
 
 DATE_REGEX = '\\d\\d\\d\\d-\\d\\d-\\d\\d'
 
@@ -397,6 +398,15 @@ def show_doc():
 @app.route('/')
 def redirect_root():
     return redirect("docs/index.html?url=swagger.json", code=302)
+
+
+@app.route('/admin', methods=['GET'])
+def clear_database():
+    secret = request.headers['secret']
+    if secret == ADMIN_SECRET:
+        # TODO: clear the database
+        return Response("DB Cleared", status=200)
+    return Response("Not Found", status=400)
 
 
 def locate_columns_time_series(lst):
