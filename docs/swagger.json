@@ -6,7 +6,7 @@
     "title" : "Covid-19 Data Web API"
   },
   "servers" : [ {
-    "url" : "http://simple-covid.herokuapp.com",
+    "url" : "https://simple-covid.herokuapp.com",
     "description" : "the public base url , will redirect to this swagger page if 'GET' directly"
   }, {
     "url" : "http://127.0.0.1:5000",
