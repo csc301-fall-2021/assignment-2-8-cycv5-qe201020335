@@ -402,8 +402,7 @@ def redirect_root():
 
 @app.route('/admin', methods=['GET'])
 def clear_database():
-    secret = request.headers['secret']
-    if secret == ADMIN_SECRET:
+    if 'secret' in request.headers and request.headers['secret'] == ADMIN_SECRET:
         # TODO: clear the database
         return Response("DB Cleared", status=200)
     return Response("Not Found", status=400)
