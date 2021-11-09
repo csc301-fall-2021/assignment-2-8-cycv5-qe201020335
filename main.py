@@ -491,5 +491,5 @@ def validate_date(date):
     return bool(b)
 
 
-if __name__ == "__main__" and is_prod:
+if __name__ == "__main__" and not is_prod:
     app.run(debug=True, host='0.0.0.0', port=5000)
