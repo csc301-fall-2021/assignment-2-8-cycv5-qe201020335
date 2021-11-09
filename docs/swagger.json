@@ -1,9 +1,9 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "description" : "This is a simple API for uploading and querying covid data",
+    "description" : "This is a simple API for uploading and querying COVID-19 datasets.",
     "version" : "1.0.0-oas3",
-    "title" : "Simple COVID API"
+    "title" : "Covid-19 Data Web API"
   },
   "servers" : [ {
     "url" : "http://simple-covid.herokuapp.com"
