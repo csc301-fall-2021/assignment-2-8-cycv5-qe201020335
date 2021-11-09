@@ -1,11 +1,13 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "description" : "This is a simple API",
+    "description" : "This is a simple API for uploading and querying covid data",
     "version" : "1.0.0-oas3",
-    "title" : "Simple Inventory API"
+    "title" : "Simple COVID API"
   },
   "servers" : [ {
+    "url" : "http://simple-covid.herokuapp.com"
+  }, {
     "url" : "http://127.0.0.1:5000"
   } ],
   "tags" : [ {
