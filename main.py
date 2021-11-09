@@ -355,7 +355,7 @@ def get_info():
             for data_type in data_types:
                 location = json.loads(location_json)
 
-                query = (location["country"], location["state"], location["combined"], start_time, end_time, data_type)
+                query = (location["country_region"], location["state_province"], location["combined_key"], start_time, end_time, data_type)
                 queries.append(query)
 
     except Exception as e:
@@ -388,11 +388,6 @@ def get_info():
     else:  # default json
         output = final.to_json(orient='records')
         return Response(output, mimetype="application/json", status=200)
-
-
-# @app.route('/docs/<path:path>')
-# def host_doc(path):
-#     return send_from_directory('docs', path)
 
 
 @app.route('/docs')
@@ -489,4 +484,4 @@ def validate_date(date):
 
 
 if __name__ == "__main__" and not is_prod:
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, port=5000)

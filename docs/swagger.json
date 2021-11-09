@@ -131,11 +131,11 @@
             }
           },
           "required" : true,
-          "description" : "the type of case"
+          "description" : "the type of queried case"
         }, {
           "in" : "query",
           "name" : "locations",
-          "description" : "The locations of the queried cases. \nPlease see QueryLocation schema below for details\n",
+          "description" : "The locations of the queried cases. Note that we require exact locations, i.e. any field left blank will match a blank field in the database.\nPlease see QueryLocation schema below for details\n",
           "required" : true,
           "schema" : {
             "type" : "array",
@@ -196,18 +196,18 @@
   "components" : {
     "schemas" : {
       "QueryLocation" : {
-        "description" : "Specifies one of the locations for query. \nAt least one field need to be specified, leave empty string for the rest.\n",
+        "description" : "Specifies one of the locations for query. \nAt least one field need to be specified, leave empty string if you do not have the information.\n We will search the database using the exact 3 fields that you input, i.e. blank fields must also match. For example, if you input {\n  \"country_region\": \"US\",\n  \"state_province\": \"\",\n  \"combined_key\": \"\"\n} as the 3 fields, you will only get a result if ('US', '', '') for the corresponding 3 fields has data in the database.",
         "type" : "object",
         "properties" : {
-          "country" : {
+          "country_region" : {
             "description" : "Country or region",
             "type" : "string"
           },
-          "state" : {
+          "state_province" : {
             "type" : "string",
             "description" : "Province or state"
           },
-          "combined" : {
+          "combined_key" : {
             "type" : "string",
             "description" : "Combined key"
           }
