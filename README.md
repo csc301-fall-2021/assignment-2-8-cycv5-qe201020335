@@ -2,11 +2,9 @@
 assignment-2-8-cycv5-qe201020335
 
 ## API Documentation
-Our API is deployed on Heroku with base URL `https://simple-covid.herokuapp.com/`.
+Our API is deployed on Heroku with base URL `https://simple-covid.herokuapp.com/`. The base url will lead you to the swagger page where you can test the api.
 
 We have documented our API in much detail with Swagger. **Click [HERE](https://simple-covid.herokuapp.com/docs/index.html?url=swagger.json) for the documentation.**
-
-The base URL will redirect you to the documentation page if you decide to put it directly in your browser.
 
 ## Pair Programming
 
@@ -40,6 +38,9 @@ The main objective is to make this program as clear as possible without super lo
 For uploading the time series data, we need the type of the data in the url. For daily report we require a date for this report (yyyy-mm-dd). This is to avoid any confusions or misinterpretation of the content where the program parses a date that is not intended.
 
 For querying the data, we support querying multiple locations and with multiple types of cases. In swagger, hold ctrl and click on the types of data you would like to get. **Note that we will query the data exactly as the input**, that means we will look for the exact combination of country, state, and combined key as you supplied (you may leave at most two fields blank). This is to avoid any data being a subset of another query result. We also support queries on a single day or a time period. For a single day query, simply enter the start date and leave the end date blank.
+
+## CICD and testing
+The deployment can be viewed at `https://simple-covid.herokuapp.com/`. We used Circle CI for the CICD tool. **Click [HERE](https://app.circleci.com/pipelines/github/csc301-fall-2021/assignment-2-8-cycv5-qe201020335?invite=true) for to join and see our CICD progress. Note that this method might require you to be logged in. You can also see the cicd progress directly on github.** The CICD tool also generate our test coverage report as the artifact. It is in a zip file. The test coverage is **85%**. For you convenience, we have included the zip file in this repo.
 
 ## Notes on Testing the API
 * The upload part could take quite some time to complete. This is to make the querying fast.
