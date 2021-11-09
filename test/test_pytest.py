@@ -1,12 +1,15 @@
 import subprocess
 from time import sleep
+import os
 
 import requests
 import pytest
 
 BASE = "http://127.0.0.1:5000/"
 
-server = subprocess.Popen(["python", "main.py"]) # start server
+os.environ["FLASK_APP"] = "main"
+server = subprocess.Popen(["flask", "run"])  # start server
+
 sleep(3)
 
 
