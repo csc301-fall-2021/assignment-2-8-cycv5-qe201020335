@@ -63,10 +63,21 @@
         }
       }
     },
-    "/daily_reports" : {
+    "/daily_reports/{date}" : {
       "put" : {
         "tags" : [ "upload" ],
         "description" : "Upload new daily report data\n",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "date",
+          "schema" : {
+            "type" : "string",
+            "format" : "date",
+            "example" : "2021-01-25"
+          },
+          "required" : true,
+          "description" : "the date of this daily report in the form of yyyy-mm-dd"
+        } ],
         "requestBody" : {
           "content" : {
             "multipart/form-data" : {
@@ -184,6 +195,7 @@
           },
           "date" : {
             "type" : "string",
+            "format" : "date",
             "example" : "2020-01-25"
           },
           "cases" : {

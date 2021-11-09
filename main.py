@@ -9,6 +9,8 @@ import pandas as pd
 
 import os
 
+import re
+
 from werkzeug.utils import secure_filename
 
 
@@ -21,6 +23,7 @@ CONFIRMED = 'confirmed'
 ACTIVE = 'active'
 RECOVERED = 'recovered'
 
+DATE_REGEX = '\\d\\d\\d\\d-\\d\\d-\\d\\d'
 
 app = Flask(__name__, static_url_path='/docs', static_folder='docs')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no cache!
@@ -86,7 +89,6 @@ class Recovered(db.Model):
 
 
 @app.route('/<table_type>/<data_type>', methods=['POST', 'PUT'])
-@app.route('/<table_type>', defaults={'data_type': None}, methods=['POST', 'PUT'])
 def upload_data(table_type, data_type):
     if 'file' not in request.files:
         return Response("no file part", status=400)
@@ -104,7 +106,10 @@ def upload_data(table_type, data_type):
         if table_type == TIME_SERIES:
             res = handle_upload_time_series(data_type, opened_file)
         elif table_type == DAILY_REPORTS:
-            res = handle_upload_daily_reports(opened_file, date_input="2020-06-05")  # TODO: add date input
+            if not re.match(DATE_REGEX, data_type):
+                res = Response("Illegal Date Format", status=400)
+            else:
+                res = handle_upload_daily_reports(opened_file, data_type)
         else:
             res = Response("Illegal Data Format", status=400)
 
