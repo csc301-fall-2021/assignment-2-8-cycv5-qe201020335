@@ -183,6 +183,9 @@
           },
           "400" : {
             "description" : "bad input parameter"
+          },
+          "404" : {
+            "description" : "No matching data found"
           }
         }
       }

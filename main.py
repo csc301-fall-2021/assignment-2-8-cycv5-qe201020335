@@ -379,6 +379,10 @@ def get_info():
 
     final = pd.concat(result, ignore_index=True)
     print(final)
+
+    if final.empty:
+        return Response("No matching data found", status=404)
+
     output = StringIO()
 
     if output_format == 'text/csv':
