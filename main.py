@@ -8,7 +8,7 @@ import sqlite3 as sq
 import pandas as pd
 
 import os
-
+import json
 import re
 
 from werkzeug.utils import secure_filename
@@ -237,8 +237,7 @@ def handle_upload_time_series(data_type, opened_file):
             except StopIteration:
                 row = None
     else:
-        return Response("Invalid request form, need .../time_series/<data_type>"
-                        , status=400)
+        return Response("Invalid request form", status=400)
 
     return Response("Success", status=201)
 
@@ -328,24 +327,46 @@ def handle_upload_daily_reports(opened_file, date_input):
     return Response("Success", status=201)
 
 
-@app.route('/cases/<data_type>', methods=['GET'])
-def get_info(data_type):
+@app.route('/cases', methods=['GET'])
+def get_info():
 
     # TODO: get the following info from request, hardcoded for now.
     #  format List[<tup>,...,<tup>], each tuple has
     #  (country, state/province, combined_key, start date, end date, type of data)
     #  empty string for info that is not given, start date=end date if only
     #  querying for one single day.
-    query = [('Canada', 'British Columbia', '', '2020-01-22', '2020-01-26', 'death'),
-             ('US', 'South Carolina', 'Abbeville, South Carolina, US', '2020-06-06', '2020-06-06', 'active'),
-             ('Bahamas', '', '', '2020-01-23', '2020-07-01', 'death')]
-    # TODO: get output format from request, csv or json
+
+    queries = []
+    try:
+        data_types = request.args.getlist('data_type')
+        locations = request.args.getlist('locations')
+        start_time = request.args.get('start_time')
+        if 'end_time' in request.args:
+            end_time = request.args.get('end_time')
+        else:
+            end_time = start_time
+
+        print(locations)
+        print(data_types)
+
+        for location_json in locations:
+            for data_type in data_types:
+                location = json.loads(location_json)
+
+                query = (location["country"], location["state"], location["combined"], start_time, end_time, data_type)
+                queries.append(query)
+
+    except Exception as e:
+        print(e)
+        return Response("bad input parameter\n", status=400)
+
+    # get output format from request, csv or json
     output_format = request.headers['Accept']
 
     # Below are database ops
     con = sq.connect('covid.db')
     result = []
-    for q in query:
+    for q in queries:
         sql_query = "select country as 'country_region', state as 'state_province', combined as 'combined_key', date(date) as date, cases, '%s' as 'type' " \
                     "from %s where country='%s' and state='%s' and combined='%s' and date >= '%s' and " \
                     "date < DATE('%s', '+1 day');" % (q[5], q[5], q[0], q[1], q[2], q[3], q[4])
