@@ -111,46 +111,53 @@
         }
       }
     },
-    "/cases/{data_type}" : {
+    "/cases" : {
       "get" : {
         "tags" : [ "query" ],
         "summary" : "query covid case data with parameters",
-        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "description" : "Query different types of covid cases in multiple locations during a specified time span\n",
         "parameters" : [ {
-          "in" : "path",
+          "in" : "query",
           "name" : "data_type",
           "schema" : {
-            "type" : "string",
-            "enum" : [ "death", "confirmed", "active", "recovered" ]
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "death", "confirmed", "active", "recovered" ]
+            }
           },
           "required" : true,
-          "description" : "the type of data"
+          "description" : "the type of case"
         }, {
           "in" : "query",
-          "name" : "searchString",
-          "description" : "pass an optional search string for looking up inventory",
+          "name" : "locations",
+          "description" : "The locations of the cases from. \nPlease see QueryLocation schema below for details\n",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QueryLocation"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "start_time",
+          "description" : "the starting date of this query in the form of yyyy-mm-dd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date",
+            "example" : "2021-01-25"
+          }
+        }, {
+          "in" : "query",
+          "name" : "end_time",
+          "description" : "the end date of this query in the form of yyyy-mm-dd",
           "required" : false,
           "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "query",
-          "name" : "skip",
-          "description" : "number of records to skip for pagination",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "minimum" : 0
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "description" : "maximum number of records to return",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "minimum" : 0,
-            "maximum" : 50
+            "type" : "string",
+            "format" : "date",
+            "example" : "2021-01-25"
           }
         } ],
         "responses" : {
@@ -159,7 +166,10 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/QueryResultJson"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/QueryResultJson"
+                  }
                 }
               },
               "text/csv" : {
@@ -178,6 +188,24 @@
   },
   "components" : {
     "schemas" : {
+      "QueryLocation" : {
+        "description" : "Specifies one location for query. \nAt least one field need to be specified, leave empty string for the rest.\n",
+        "type" : "object",
+        "properties" : {
+          "country" : {
+            "description" : "Country or region",
+            "type" : "string"
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "Province or state"
+          },
+          "combined" : {
+            "type" : "string",
+            "description" : "Combined key"
+          }
+        }
+      },
       "QueryResultJson" : {
         "type" : "object",
         "properties" : {
