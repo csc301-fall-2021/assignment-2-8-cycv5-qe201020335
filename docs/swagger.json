@@ -6,7 +6,7 @@
     "title" : "Simple Inventory API"
   },
   "servers" : [ {
-    "url" : "http://127.0.0.1:5000"
+    "url" : "simple-covid.herokuapp.com"
   } ],
   "tags" : [ {
     "name" : "upload",
