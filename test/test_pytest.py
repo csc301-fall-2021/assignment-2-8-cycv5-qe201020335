@@ -23,6 +23,6 @@ def test_upload_time_series():
 
 def test_upload_daily_report():
     file = {'file': open("test/daily_report_test.csv")}
-    response = requests.post(BASE + "daily_reports", files=file)
+    response = requests.post(BASE + "daily_reports/2020-02-25", files=file)
     assert response.content == b'Success'
     file['file'].close()

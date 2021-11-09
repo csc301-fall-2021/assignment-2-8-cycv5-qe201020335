@@ -402,8 +402,17 @@ def redirect_root():
 
 @app.route('/admin', methods=['GET'])
 def clear_database():
+    secret = request.headers['secret']
+    con = sq.connect('covid.db')
     if 'secret' in request.headers and request.headers['secret'] == ADMIN_SECRET:
-        # TODO: clear the database
+        delete_queries = ["DELETE FROM death",
+                          "DELETE FROM recovered",
+                          "DELETE FROM active",
+                          "DELETE FROM confirmed"]
+        for q in delete_queries:
+            con.execute(q)
+            con.commit()
+        con.close()
         return Response("DB Cleared", status=200)
     return Response("Not Found", status=400)
 
