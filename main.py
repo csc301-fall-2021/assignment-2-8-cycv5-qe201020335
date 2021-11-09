@@ -22,12 +22,22 @@ DEATH = 'death'
 CONFIRMED = 'confirmed'
 ACTIVE = 'active'
 RECOVERED = 'recovered'
-ADMIN_SECRET = 'SkyAdminSecret'
+
+
+is_prod = os.environ.get('IS_HEROKU', None)
+
+if is_prod:
+    ADMIN_SECRET = os.environ.get('ADMIN_SECRET', None)
+    print("We are on production!")
+else:
+    ADMIN_SECRET = 'SkyAdminSecret'
+    print("We are in dev env!")
+
 
 DATE_REGEX = '\\d\\d\\d\\d-\\d\\d-\\d\\d'
 
 app = Flask(__name__, static_url_path='/docs', static_folder='docs')
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no cache!
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # no static file caching!
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
@@ -331,12 +341,6 @@ def handle_upload_daily_reports(opened_file, date_input):
 @app.route('/cases', methods=['GET'])
 def get_info():
 
-    # TODO: get the following info from request, hardcoded for now.
-    #  format List[<tup>,...,<tup>], each tuple has
-    #  (country, state/province, combined_key, start date, end date, type of data)
-    #  empty string for info that is not given, start date=end date if only
-    #  querying for one single day.
-
     queries = []
     try:
         data_types = request.args.getlist('data_type')
@@ -402,9 +406,8 @@ def redirect_root():
 
 @app.route('/admin', methods=['GET'])
 def clear_database():
-    secret = request.headers['secret']
-    con = sq.connect('covid.db')
     if 'secret' in request.headers and request.headers['secret'] == ADMIN_SECRET:
+        con = sq.connect('covid.db')
         delete_queries = ["DELETE FROM death",
                           "DELETE FROM recovered",
                           "DELETE FROM active",
@@ -484,9 +487,5 @@ def validate_date(date):
     return bool(b)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)  # TODO: change to false for production
-
-    # upload_time_series("death")
-    # upload_daily_reports()
-    # get_info()
+if __name__ == "__main__" and is_prod:
+    app.run(debug=True, host='0.0.0.0', port=5000)
