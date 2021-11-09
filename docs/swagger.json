@@ -131,7 +131,7 @@
         }, {
           "in" : "query",
           "name" : "locations",
-          "description" : "The locations of the cases from. \nPlease see QueryLocation schema below for details\n",
+          "description" : "The locations of the queried cases. \nPlease see QueryLocation schema below for details\n",
           "required" : true,
           "schema" : {
             "type" : "array",
@@ -152,7 +152,7 @@
         }, {
           "in" : "query",
           "name" : "end_time",
-          "description" : "the end date of this query in the form of yyyy-mm-dd",
+          "description" : "the end date of this query in the form of yyyy-mm-dd (leave blank for single day queries)",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -189,7 +189,7 @@
   "components" : {
     "schemas" : {
       "QueryLocation" : {
-        "description" : "Specifies one location for query. \nAt least one field need to be specified, leave empty string for the rest.\n",
+        "description" : "Specifies one of the locations for query. \nAt least one field need to be specified, leave empty string for the rest.\n",
         "type" : "object",
         "properties" : {
           "country" : {
