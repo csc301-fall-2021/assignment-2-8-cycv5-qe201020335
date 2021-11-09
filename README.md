@@ -10,14 +10,15 @@ As a group we think the experience was very positive. We usually do pair program
 
 ## Program Design
 
-The program structure can easily be viewed on Swagger.
+### Structure
+**The program structure can easily be viewed & tested on Swagger, the introduction below will be brief.**
 * Uploads: The upload route lets you upload your files. We think it would be very clear to have the type of the file you are uploading in the route.
 
   * /time_series/<data_type> (post, put):
 This is for uploading time_series data. The data_type specifies what the numbers in the csv form represent (death, confirmed, active or recovered).
 
-  * /daily_report (post, put):
-This is for uploading a daily report. The program will parse the information for you.
+  * /daily_report/< date > (post, put):
+This is for uploading a daily report. The program will parse the information for you. You need to give a date for the daily report.
 
 * Queries
   * /cases (get):
@@ -26,3 +27,13 @@ This is where you can make queries on the data. Again, we think this is very int
 The main objective is to make this program as clear as possible without super long routes or unclear names. And we made sure that post, put and get methods are implemented in their most intuitive ways, e.g. querying data would be a get and uploading a file to the system would be a post.
 
 * Database: We design the database so that we can store only the relevant information. We have 4 tables in our database representing the death, confirmed, active and recovered table. Within each table, we have country_region, state_province, combined_key, cases, and date. This results in a fast search speed and any relevant information can be found within those four tables.
+
+### API design
+For uploading the time series data, we need the type of the data in the url. For daily report we require a date for this report (yyyy-mm-dd). This is to avoid any confusions or misinterpretation of the content where the program parses a date that is not intended.
+
+For querying the data, we support querying multiple locations and with multiple types of cases. In swagger, hold ctrl and click on the types of data you would like to get. **Note that we will query the data exactly as the input**, that means we will look for the exact combination of country, state, and combined key as you supplied (you may leave at most two fields blank). This is to avoid any data being a subset of another query result. We also support queries on a single day or a time period. For a single day query, simply enter the start date and leave the end date blank.
+
+## Notes on Testing the API
+* The upload part could take quite some time to complete. This is to make the querying fast.
+* We gave a lot of examples on swagger showing you the expected input and output format.
+
