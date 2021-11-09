@@ -386,7 +386,7 @@ def get_info():
     output = StringIO()
 
     if output_format == 'text/csv':
-        final.to_csv(output)
+        final.to_csv(output, line_terminator='\n')
         return Response("index" + output.getvalue(), mimetype="text/csv", status=200)
     else:  # default json
         output = final.to_json(orient='records')
