@@ -59,13 +59,13 @@ def test_query_multi_types_multi_date_json():
 def test_query_single_type_multi_date_csv():
     req = BASE + 'cases?data_type=active&locations=%7B%0A%20%20%22country%22%3A%20%22Canada%22%2C%0A%20%20%22state%22%3A%20%22British%20Columbia%22%2C%0A%20%20%22combined%22%3A%20%22%22%0A%7D&start_time=2020-01-23&end_time=2020-01-31'
     response = requests.get(req, headers={'accept': 'text/csv'})
-    assert response.content == b'index,country_region,state_province,combined_key,date,cases,type\r\n0,Canada,British Columbia,,2020-01-23,2,active\r\n1,Canada,British Columbia,,2020-01-24,4,active\r\n2,Canada,British Columbia,,2020-01-26,5,active\r\n'
+    assert response.content == b'index,country_region,state_province,combined_key,date,cases,type\r\n0,Canada,British Columbia,,2020-01-23,2,active\r\n1,Canada,British Columbia,,2020-01-24,4,active\r\n2,Canada,British Columbia,,2020-01-26,5,active\n'
 
 
 def test_query_multi_type_single_date_csv():
     req = BASE + 'cases?data_type=active&data_type=recovered&locations=%7B%0A%20%20%22country%22%3A%20%22Canada%22%2C%0A%20%20%22state%22%3A%20%22British%20Columbia%22%2C%0A%20%20%22combined%22%3A%20%22%22%0A%7D&start_time=2020-01-23'
     response = requests.get(req, headers={'accept': 'text/csv'})
-    assert response.content == b'index,country_region,state_province,combined_key,date,cases,type\r\n0,Canada,British Columbia,,2020-01-23,2,active\r\n1,Canada,British Columbia,,2020-01-23,2,recovered\r\n'
+    assert response.content == b'index,country_region,state_province,combined_key,date,cases,type\r\n0,Canada,British Columbia,,2020-01-23,2,active\r\n1,Canada,British Columbia,,2020-01-23,2,recovered\n'
 
 
 def test_query_single_type_single_date_json():
