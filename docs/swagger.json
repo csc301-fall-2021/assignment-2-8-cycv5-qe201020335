@@ -6,16 +6,18 @@
     "title" : "Covid-19 Data Web API"
   },
   "servers" : [ {
-    "url" : "http://simple-covid.herokuapp.com"
+    "url" : "http://simple-covid.herokuapp.com",
+    "description" : "the public base url , will redirect to this swagger page if 'GET' directly"
   }, {
-    "url" : "http://127.0.0.1:5000"
+    "url" : "http://127.0.0.1:5000",
+    "description" : "base url for testing on development server"
   } ],
   "tags" : [ {
     "name" : "upload",
     "description" : "Add new data or update existing data"
   }, {
     "name" : "query",
-    "description" : "Query data, DUH."
+    "description" : "Query data that has been uploaded"
   } ],
   "paths" : {
     "/time_series/{data_type}" : {
@@ -154,7 +156,7 @@
         }, {
           "in" : "query",
           "name" : "end_time",
-          "description" : "the end date of this query in the form of yyyy-mm-dd (leave blank for single day queries)",
+          "description" : "the end date of this query in the form of yyyy-mm-dd (leave blank or omit in url for single day queries)\n",
           "required" : false,
           "schema" : {
             "type" : "string",
